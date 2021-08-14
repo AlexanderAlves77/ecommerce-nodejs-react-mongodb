@@ -72,10 +72,12 @@ class ClienteController {
         cliente.nome = nome
       }
       if (email) cliente.usuario.email = email
-      if (cpf) cliente.usuario.cpf = cpf
-      if (telefones) cliente.usuario.telefones = telefones
-      if (endereco) cliente.usuario.endereco = endereco
-      if (dataDeNascimento) cliente.usuario.dataDeNascimento = dataDeNascimento
+      if (cpf) cliente.cpf = cpf
+      if (telefones) cliente.telefones = telefones
+      if (endereco) cliente.endereco = endereco
+      if (dataDeNascimento) cliente.dataDeNascimento = dataDeNascimento
+
+      await cliente.usuario.save()
       await cliente.save()
       return res.send({ cliente })
     } catch (error) {

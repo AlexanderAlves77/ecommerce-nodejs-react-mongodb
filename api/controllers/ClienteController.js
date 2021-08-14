@@ -15,7 +15,7 @@ class ClienteController {
       const limit = Number(req.query.limit) || 30
       const clientes = await Cliente.paginate(
         { loja: req.query.loja },
-        { offset, limit, populate: 'usuario' }
+        { offset, limit, populate: { path: 'usuario', select: '-salt -hash' } }
       )
       return res.send({ clientes })
     } catch (error) {
@@ -37,7 +37,7 @@ class ClienteController {
     try {
       const clientes = await Cliente.paginate(
         { loja: req.query.loja, nome: { $regex: search } },
-        { offset, limit, populate: 'usuario' }
+        { offset, limit, populate: { path: 'usuario', select: '-salt -hash' } }
       )
       return res.send({ clientes })
     } catch (error) {
@@ -50,7 +50,7 @@ class ClienteController {
     try {
       const cliente = await (
         await Cliente.findOne({ _id: req.params.id, loja: req.query.loja })
-      ).populated('usuario')
+      ).populated({ path: 'usuario', select: '-salt -hash' })
       return res.send({ cliente })
     } catch (error) {
       next(error)
@@ -66,7 +66,10 @@ class ClienteController {
   async updateAdmin(req, res, next) {
     const { nome, cpf, email, telefones, endereco, dataDeNascimento } = req.body
     try {
-      const Cliente = await Cliente.findById(req.params.id).populate('usuario')
+      const cliente = await Cliente.findById(req.params.id).populate({
+        path: 'usuario',
+        select: '-salt -hash',
+      })
       if (nome) {
         cliente.usuario.nome = nome
         cliente.nome = nome
@@ -94,7 +97,7 @@ class ClienteController {
       const cliente = await Cliente.findOne({
         usuario: req.payload.id,
         loja: req.query.loja,
-      }).populated('usuario')
+      }).populated({ path: 'usuario', select: '-salt -hash' })
       return res.send({ cliente })
     } catch (error) {
       next(error)
@@ -146,13 +149,15 @@ class ClienteController {
       telefones,
       endereco,
       dataDeNascimento,
-      passwrod,
+      password,
     } = req.body
 
     try {
-      const cliente = await Cliente.findById(req.payload.id).populated(
-        'usuario'
-      )
+      const cliente = await Cliente.findOne({
+        usuario: req.payload.id,
+      }).populated('usuario')
+      if (!cliente) return res.send({ error: 'Cliente não existe.' })
+
       if (nome) {
         cliente.usuario.nome = nome
         cliente.nome = nome
@@ -165,6 +170,11 @@ class ClienteController {
       if (dataDeNascimento) cliente.usuario.dataDeNascimento = dataDeNascimento
 
       await cliente.save()
+      cliente.usuario = {
+        email: cliente.usuario.email,
+        _id: cliente.usuario._id,
+        permissao: cliente.usuario.permissao,
+      }
       return res.send({ cliente })
     } catch (error) {
       next(error)

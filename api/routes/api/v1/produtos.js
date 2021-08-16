@@ -60,5 +60,6 @@ router.get('/:id', Validation(ProdutoValidation.show), produtoController.show)
 // VARIACOES
 
 // AVALIACOES
+router.get('/:id/avaliacoes', produtoController.showAvaliacoes)
 
 module.exports = router

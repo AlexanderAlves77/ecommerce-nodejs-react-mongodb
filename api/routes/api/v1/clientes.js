@@ -24,6 +24,7 @@ router.get(
   '/search/:search/pedidos',
   auth.required,
   LojaValidation.admin,
+  Validation(ClienteValidation.searchPedidos),
   clienteController.searchPedidos
 )
 router.get(
@@ -44,6 +45,7 @@ router.get(
   '/admin/:id/:pedidos',
   auth.required,
   LojaValidation.admin,
+  Validation(ClienteValidation.showPedidosCliente),
   clienteController.showPedidosCliente
 )
 

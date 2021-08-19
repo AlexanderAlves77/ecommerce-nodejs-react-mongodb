@@ -6,7 +6,7 @@ const Variacao = mongoose.model('Variacao')
 const Pagamento = mongoose.model('Pagamento')
 const Entrega = mongoose.model('Entrega')
 const Cliente = mongoose.model('Cliente')
-const Usuario = mongoose.model('Usuario')
+const RegistroPedido = mongoose.model('RegistroPedido')
 
 const CarrinhoValidation = require('./validacoes/carrinhoValidation')
 
@@ -59,8 +59,9 @@ class PedidoController {
           return item
         })
       )
+      const registros = await RegistroPedido.find({ pedido: pedido._id })
 
-      return res.send({ pedido })
+      return res.send({ pedido, registros })
     } catch (error) {
       next(error)
     }
@@ -78,6 +79,12 @@ class PedidoController {
       }
       pedido.cancelado = true
 
+      const registroPedido = new RegistroPedido({
+        pedido: pedido._id,
+        tipo: 'pedido',
+        situacao: 'pedido_cancelado',
+      })
+      await registroPedido.save()
       // Registro de atividade = pedido cancelado
       // Enviar email para cliente = pedido cancelado
 
@@ -116,7 +123,7 @@ class PedidoController {
     const { offset, limit, loja } = req.query
 
     try {
-      const cliente = await Cliente.findById({ usuario: req.payload.id })
+      const cliente = await Cliente.findOne({ usuario: req.payload.id })
       const pedidos = await Pedido.paginate(
         { loja, cliente: cliente._id },
         {
@@ -147,7 +154,7 @@ class PedidoController {
   // get /:id show
   async show(req, res, next) {
     try {
-      const cliente = await Cliente.findById({ usuario: req.payload.id })
+      const cliente = await Cliente.findOne({ usuario: req.payload.id })
       const pedido = await Pedido.findOne({
         cliente: cliente._id,
         _id: req.params.id,
@@ -174,7 +181,7 @@ class PedidoController {
 
     try {
       // CHECAR DADOS DO CARRINHO
-      if (!CarrinhoValidation(carrinho)) {
+      if (!(await CarrinhoValidation(carrinho))) {
         return res.status(422).send({ error: 'Carrinho inválido.' })
       }
 
@@ -202,6 +209,7 @@ class PedidoController {
         status: 'nao_iniciado',
         custo: entrega.custo,
         prazo: entrega.prazo,
+        tipo: entrega.tipo,
         payload: entrega,
         loja,
       })
@@ -221,10 +229,17 @@ class PedidoController {
       await novoPagamento.save()
       await novaEntrega.save()
 
+      const registroPedido = new RegistroPedido({
+        pedido: pedido._id,
+        tipo: 'pedido',
+        situacao: 'pedido_criado',
+      })
+      await registroPedido.save()
+
       // Notificar via email - cliente e admin = novo pedido
 
       return res.send({
-        pedido: Object.assign({}, pedido, {
+        pedido: Object.assign({}, pedido._doc, {
           entrega: novaEntrega,
           pagamento: novoPagamento,
           cliente,
@@ -238,7 +253,7 @@ class PedidoController {
   // delete /:id remove
   async remove(req, res, next) {
     try {
-      const cliente = await Cliente.findById({ usuario: req.payload.id })
+      const cliente = await Cliente.findOne({ usuario: req.payload.id })
       if (!cliente) {
         return res.status(400).send({ error: 'Cliente não encontrado.' })
       }
@@ -252,6 +267,12 @@ class PedidoController {
       }
       pedido.cancelado = true
 
+      const registroPedido = new RegistroPedido({
+        pedido: pedido._id,
+        tipo: 'pedido',
+        situacao: 'pedido_cancelado',
+      })
+      await registroPedido.save()
       // Registro de atividade = pedido cancelado
       // Enviar email para cliente = pedido cancelado
 
@@ -265,7 +286,7 @@ class PedidoController {
   // get /:id/carrinho showCarrinhoPedido
   async showCarrinhoPedido(req, res, next) {
     try {
-      const cliente = await Cliente.findById({ usuario: req.payload.id })
+      const cliente = await Cliente.findOne({ usuario: req.payload.id })
       const pedido = await Pedido.findOne({
         cliente: cliente._id,
         _id: req.params.id,

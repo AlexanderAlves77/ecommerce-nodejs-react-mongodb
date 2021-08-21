@@ -7,7 +7,9 @@ const Pagamento = mongoose.model('Pagamento')
 const Entrega = mongoose.model('Entrega')
 const Cliente = mongoose.model('Cliente')
 const RegistroPedido = mongoose.model('RegistroPedido')
+
 const { calcularFrete } = require('./integracoes/correios')
+const EntregaValidation = require('./validacoes/entregaValidation')
 
 const CarrinhoValidation = require('./validacoes/carrinhoValidation')
 
@@ -188,8 +190,16 @@ class PedidoController {
         return res.status(422).send({ error: 'Carrinho inválido.' })
       }
 
+      const cliente = await Cliente.findOne({ usuario: req.payload.id })
+
       // CHECAR DADOS DA ENTREGA
-      if (!EntregaValidation(carrinho, entrega)) {
+      if (
+        !(await EntregaValidation.checarValorPrazo(
+          cliente.endereco.CEP,
+          carrinho,
+          entrega
+        ))
+      ) {
         return res.status(422).send({ error: 'Dados de Entrega inválidos.' })
       }
 
@@ -197,8 +207,6 @@ class PedidoController {
       if (!PagamentoValidation(carrinho, pagamento)) {
         return res.status(422).send({ error: 'Dados de Pagamento inválido.' })
       }
-
-      const cliente = await Cliente.findOne({ usuario: req.payload.id })
 
       const novoPagamento = new Pagamento({
         valor: pagamento.valor,

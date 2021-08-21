@@ -27,19 +27,19 @@ const EntregaController = {
 
   // PUT /:id
   async updateLocale(req, res, next) {
-    const { situacao, codigoRastreamento } = req.body
+    const { status, codigoRastreamento } = req.body
     const { loja } = req.query
 
     try {
       const entrega = await Entrega.findOne({ loja, _id: req.params.id })
 
-      if (situacao) entrega.situacao = situacao
+      if (status) entrega.status = status
       if (codigoRastreamento) entrega.codigoRastreamento = codigoRastreamento
 
       const registroPedido = new RegistroPedido({
         pedido: entrega.pedido,
         tipo: 'entrega',
-        situacao: situacao,
+        situacao: status,
         payload: req.body,
       })
       await registroPedido.save()
@@ -53,7 +53,7 @@ const EntregaController = {
   },
 
   // POST /calcular
-  async calcularFrete(req, res, next) {
+  async calcular(req, res, next) {
     const { cep, carrinho } = req.body
 
     try {
@@ -64,7 +64,7 @@ const EntregaController = {
           return item
         })
       )
-      const resultados = await calcularFrete(cep, _carrinho)
+      const resultados = await calcularFrete({ cep, produtos: _carrinho })
       return res.send({ resultados })
     } catch (error) {
       next(error)

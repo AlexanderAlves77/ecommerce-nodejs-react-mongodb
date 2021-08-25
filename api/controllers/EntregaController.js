@@ -2,10 +2,13 @@ const mongoose = require('mongoose')
 const { calcularFrete } = require('./integracoes/correios')
 
 const Entrega = require('Entrega')
+const Pedido = require('Pedido')
 const Produto = require('Produto')
 const Variacao = require('Variacao')
 const { updateLocale } = require('moment')
 const RegistroPedido = mongoose.model('RegistroPedido')
+
+const EmailController = require('./EmailController')
 
 const EntregaController = {
   async show(req, res, next) {
@@ -26,7 +29,7 @@ const EntregaController = {
   },
 
   // PUT /:id
-  async updateLocale(req, res, next) {
+  async update(req, res, next) {
     const { status, codigoRastreamento } = req.body
     const { loja } = req.query
 
@@ -43,7 +46,19 @@ const EntregaController = {
         payload: req.body,
       })
       await registroPedido.save()
+
       // Enviar email de aviso para o cliente - aviso de atualizacao na entrega
+      const pedido = await Pedido.findById(entrega.pedido).populate({
+        path: 'cliente',
+        populate: { path: 'usuario' },
+      })
+      EmailController.atualizarPedido({
+        usuario: pedido.cliente.usuario,
+        pedido,
+        tipo: 'entrega',
+        status: status,
+        data: new Date(),
+      })
 
       await entrega.save()
       return res.send({ entrega })

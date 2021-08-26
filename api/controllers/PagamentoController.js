@@ -7,6 +7,7 @@ const {
   getNotification,
 } = require('./integracoes/pagseguro')
 const ProdutoValidation = require('./validacoes/produtoValidation')
+const QuantidadeValidation = require('./validacoes/quantidadeValidation')
 
 const Pagamento = mongoose.model('Pagamento')
 const Pedido = mongoose.model('Pedido')
@@ -137,6 +138,19 @@ class PagamentoController {
       })
 
       await pagamento.save()
+
+      if (status.toLowerCase().includes('pago')) {
+        await QuantidadeValidation.atualizarQuantidade(
+          'confirmar_pedido',
+          pedido
+        )
+      } else if (status.toLowerCase.includes('cancelado')) {
+        await QuantidadeValidation.atualizarQuantidade(
+          'cancelar_pedido',
+          pedido
+        )
+      }
+
       return res.send({ pagamento })
     } catch (error) {}
   }
@@ -186,7 +200,9 @@ class PagamentoController {
           payload: situacao,
         })
         pagamento.status = situacao.status
+
         await pagamento.save()
+
         await registroPedido.save()
 
         const pedido = await Pedido.findById(pagamento.pedido).populate({
@@ -200,6 +216,18 @@ class PagamentoController {
           status: situacao.status,
           data: new Date(),
         })
+
+        if (status.toLowerCase().includes('pago')) {
+          await QuantidadeValidation.atualizarQuantidade(
+            'confirmar_pedido',
+            pedido
+          )
+        } else if (status.toLowerCase.includes('cancelado')) {
+          await QuantidadeValidation.atualizarQuantidade(
+            'cancelar_pedido',
+            pedido
+          )
+        }
       }
 
       return res.send({ success: true })

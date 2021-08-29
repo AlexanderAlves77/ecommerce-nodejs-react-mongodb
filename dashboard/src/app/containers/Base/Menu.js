@@ -5,7 +5,7 @@ import ListItems from './ListItems'
 class Menu extends Component {
   state = { open: true }
 
-  toogleOpen = () => this.setState({ open: !this.state.open })
+  toggleOpen = () => this.setState({ open: !this.state.open })
 
   render() {
     const { open } = this.state

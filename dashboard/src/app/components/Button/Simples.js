@@ -4,7 +4,7 @@ import { Link } from 'react-router-dom'
 const Button = ({ type, onClick, label }) => (
   <div className="Button">
     <button
-      onClick={onCLick}
+      onClick={onClick}
       className={`button button-${type || 'default'}`}
       label={label}
     ></button>

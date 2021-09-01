@@ -8,6 +8,7 @@ import base from './containers/HOC/Base'
 
 // CONTAINER COM BASE
 import Pedidos from './containers/Pedidos'
+import Pedido from './containers/Pedido'
 
 // CONTAINER SEM BASE
 import Login from './containers/Login'
@@ -21,6 +22,7 @@ class App extends Component {
         <Router>
           <div className="App">
             <Route path={'/'} exact component={base(Pedidos)} />
+            <Route path={'/pedido'} exact component={base(Pedido)} />
 
             <Route path={'/login'} component={Login} />
             <Route path={'/recuperar-senha'} component={RecuperarSenha} />

@@ -2,8 +2,8 @@ import React from 'react'
 
 const Titulo = ({ tipo, titulo }) => {
   switch (tipo) {
-    case 'h1':
-      return <h1 className="Titulo-principal">{titulo}</h1>
+    case 'h2':
+      return <h2 className="Titulo-principal">{titulo}</h2>
     default:
       return <h1 className="Titulo-principal">{titulo}</h1>
   }

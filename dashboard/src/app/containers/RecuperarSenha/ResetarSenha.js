@@ -23,6 +23,7 @@ class ResetarSenha extends Component {
         </div>
         <br />
         <div>
+          e:
           <Input
             label="Senha"
             type="password"

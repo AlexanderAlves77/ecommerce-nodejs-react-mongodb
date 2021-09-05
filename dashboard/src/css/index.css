@@ -7,6 +7,21 @@ body {
   -moz-osx-font-smoothing: grayscale;
 }
 
+:root {
+  --cor-tema: rgb(7, 7, 114);
+  --cor-tema-claro: rgb(27, 79, 169);
+
+  --cor-primaria: rgb(10, 99, 167);
+  --cor-segundaria: rgb(17, 131, 17);
+  --cor-terciaria: rgb(176, 22, 22);
+  --cor-amarelo: rgb(220, 204, 26);
+
+  --cor-peta: #000;
+  --cor-branca: #fff;
+  --cor-cinza-claro: #eee;
+  --cor-cinza-escuro: #222;
+}
+
 .full-width {
   width: 100%;
 }
@@ -52,4 +67,55 @@ body {
 
 .flex-center {
   justify-content: center;
+}
+
+/* COMPONENTES */
+.Barra-Topo {
+  background-color: var(--cor-peta);
+  margin-left: -20px;
+  z-index: 100;
+  padding: 10px;
+  height: 21px;
+}
+
+.Barra-Topo a {
+  color: var(--cor-branca);
+  text-decoration: none;
+  font-weight: 200;
+}
+
+.Menu {
+  background-color: var(--cor-tema);
+  width: 50px;
+  margin-right: 20px;
+  box-shadow: 0 0 5px #1111;
+}
+
+.Menu-open {
+  width: 180px;
+}
+
+.Menu a {
+  color: var(--cor-branca);
+}
+
+.item-top {
+  padding: 10px;
+  padding-bottom: 0px;
+  font-size: 1.3rem;
+  cursor: pointer;
+  color: var(--cor-branca);
+}
+
+.menu-item {
+  height: 50px;
+}
+
+.menu-item:hover,
+.menu-item-active {
+  background-color: var(--cor-tema-claro);
+}
+
+.menu-item i {
+  font-size: 1.3rem;
 }

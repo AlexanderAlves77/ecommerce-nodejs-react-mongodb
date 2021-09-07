@@ -30,7 +30,7 @@ class DetalhesDaEntrega extends Component {
 
     return (
       <div className="Detalhes-do-Entrega">
-        <Titulo tipo="h4" titulo="Entrega" />
+        <Titulo tipo="h3" titulo="Entrega" />
         <br />
         <label>Código de Rastreamento</label>
         <InputValor

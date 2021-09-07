@@ -25,7 +25,7 @@ class DetalhesDoPagamento extends Component {
 
     return (
       <div className="Detalhes-do-Pagamento">
-        <Titulo tipo="h4" titulo="Pagamento" />
+        <Titulo tipo="h3" titulo="Pagamento" />
         <br />
         <ListaDinamica
           dados={status}

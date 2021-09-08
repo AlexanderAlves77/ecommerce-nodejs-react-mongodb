@@ -1,12 +1,11 @@
 import React, { Component } from 'react'
-import moment from 'moment'
 
 import Titulo from '../../components/Texto/Titulo'
 import Pesquisa from '../../components/Inputs/Pesquisa'
 import Tabela from '../../components/Tabela/Simples'
 import Paginacao from '../../components/Paginacao/Simples'
 
-class Pedidos extends Component {
+class Clientes extends Component {
   state = {
     pesquisa: '',
     atual: 0,
@@ -23,31 +22,38 @@ class Pedidos extends Component {
     const dados = [
       {
         Cliente: 'Cliente 1',
-        'Valor Total': 89.99,
-        Data: moment().toISOString(),
-        Situação: 'Aguardando Pagamento',
-        botaoDetalhes: '/pedidos/77WA45LML634D69',
+        'E-mail': 'cliente1@hotmail.com',
+        Telefone: '11 1234-5678',
+        CPF: '111.222.333-44',
+        botaoDetalhes: '/cliente/cliente1@hotmail.com',
       },
       {
         Cliente: 'Cliente 2',
-        'Valor Total': 105.9,
-        Data: moment().toISOString(),
-        Situação: 'Aguardando Pagamento',
-        botaoDetalhes: '/pedidos/54JTF40BJB5BL5',
+        'E-mail': 'cliente2@hotmail.com',
+        Telefone: '11 1234-5678',
+        CPF: '111.222.333-44',
+        botaoDetalhes: '/cliente/cliente2@hotmail.com',
       },
       {
         Cliente: 'Cliente 3',
-        'Valor Total': 26.72,
-        Data: moment().toISOString(),
-        Situação: 'Pagamento Concluído',
-        botaoDetalhes: '/pedidos/9D19DKSAD9AKSD',
+        'E-mail': 'cliente3@hotmail.com',
+        Telefone: '11 1234-5678',
+        CPF: '111.222.333-44',
+        botaoDetalhes: '/cliente/cliente3@hotmail.com',
+      },
+      {
+        Cliente: 'Cliente 4',
+        'E-mail': 'cliente4@hotmail.com',
+        Telefone: '11 1234-5678',
+        CPF: '111.222.333-44',
+        botaoDetalhes: '/cliente/cliente4@hotmail.com',
       },
     ]
 
     return (
-      <div className="Pedidos full-width">
+      <div className="Clientes full-width">
         <div className="Card">
-          <Titulo tipo="h1" titulo="Pedidos" />
+          <Titulo tipo="h1" titulo="Clientes" />
           <hr />
           <Pesquisa
             valor={pesquisa}
@@ -57,7 +63,7 @@ class Pedidos extends Component {
           />
           <hr />
           <Tabela
-            cabecalho={['Cliente', 'Valor Total', 'Data', 'Situação']}
+            cabecalho={['Cliente', 'E-mail', 'Telefone', 'CPF']}
             dados={dados}
           />
           <Paginacao
@@ -72,4 +78,4 @@ class Pedidos extends Component {
   }
 }
 
-export default Pedidos
+export default Clientes

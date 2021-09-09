@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
 import Titulo from '../../components/Texto/Titulo'
 import ButtonSimples from '../../components/Button/Simples'
+import TextoDados from '../../components/Texto/Dados'
+import InputValor from '../../components/Inputs/InputValor'
 
 class DetalhesDoCliente extends Component {
   state = {

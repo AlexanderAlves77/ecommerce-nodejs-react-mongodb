@@ -20,3 +20,5 @@ class Categoria extends Component {
     )
   }
 }
+
+export default Categoria

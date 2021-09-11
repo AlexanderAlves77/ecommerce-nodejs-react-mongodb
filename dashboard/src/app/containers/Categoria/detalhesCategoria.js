@@ -5,6 +5,8 @@ import { TextoDados } from '../../components/Texto/Dados'
 import Titulo from '../../components/Texto/Titulo'
 import InputSelect from '../../components/Inputs/Select'
 
+import Voltar from '../../components/Links/Voltar'
+
 class DetalhesCategoria extends Component {
   state = {
     nome: 'Categoria',
@@ -87,6 +89,7 @@ class DetalhesCategoria extends Component {
   render() {
     return (
       <div className="Detalhes-Categoria">
+        <Voltar path="/categorias" />
         {this.renderCabecalho()}
         {this.renderDados()}
       </div>

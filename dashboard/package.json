@@ -19,11 +19,12 @@
     "web-vitals": "^1.0.1"
   },
   "scripts": {
-    "start": "react-scripts start",
+    "start": "PORT=8000 react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
     "eject": "react-scripts eject"
   },
+  "homepage": "https://loja-teste.com.br/admin",
   "eslintConfig": {
     "extends": [
       "react-app",

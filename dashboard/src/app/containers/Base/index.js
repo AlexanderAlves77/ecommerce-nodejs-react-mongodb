@@ -1,7 +1,9 @@
 import React from 'react'
+import { connect } from 'react-redux'
 
 import BarraTopo from './BarraTopo'
 import Menu from './Menu'
+import * as actions from '../../actions'
 
 class Dashboard extends React.Component {
   render() {
@@ -12,7 +14,7 @@ class Dashboard extends React.Component {
         </div>
         <div className="flex vertical full-width">
           <div className="flex horizontal">
-            <BarraTopo />
+            <BarraTopo handleLogout={this.props.handleLogout} />
           </div>
           <main className="flex full-height">{this.props.children}</main>
         </div>
@@ -21,4 +23,4 @@ class Dashboard extends React.Component {
   }
 }
 
-export default Dashboard
+export default connect(null, actions)(Dashboard)

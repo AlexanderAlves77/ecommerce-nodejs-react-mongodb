@@ -95,10 +95,12 @@ body {
   height: 21px;
 }
 
-.Barra-Topo a {
+.Barra-Topo a,
+.Barra-Topo span {
   color: var(--cor-branca);
   text-decoration: none;
   font-size: 1rem;
+  cursor: pointer;
 }
 
 .Menu {
@@ -284,6 +286,16 @@ textarea {
   border-radius: 5px;
   border: 1px solid var(--cor-cinza-medio);
   font-size: 0.95rem;
+}
+
+.input-error {
+  border: 1px solid red;
+  box-shadow: 0 0 5px #a31d1d;
+}
+
+.small-danger {
+  color: #a31d1d;
+  font-size: 12px;
 }
 
 textarea {

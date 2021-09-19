@@ -6,43 +6,74 @@ import Pesquisa from '../../components/Inputs/Pesquisa'
 import Tabela from '../../components/Tabela/Simples'
 import Paginacao from '../../components/Paginacao/Simples'
 
+import { connect } from 'react-redux'
+import * as actions from '../../actions/pedidos'
+import { formatMoney } from '../../actions'
+
 class Pedidos extends Component {
   state = {
     pesquisa: '',
     atual: 0,
+    limit: 30,
+  }
+
+  getPedidos() {
+    const { atual, limit, pesquisa } = this.state
+    const { usuario } = this.props
+
+    if (!usuario) return null
+    const loja = usuario.loja
+
+    if (pesquisa) this.props.getPedidosPesquisa(pesquisa, atual, limit, loja)
+    else this.props.getPedidos(atual, limit, loja)
+  }
+
+  componentDidMount() {
+    this.getPedidos()
+  }
+
+  componentDidUpdate(nextProps) {
+    if (!this.props.usuario && nextProps.usuario) this.getPedidos()
+  }
+
+  handlerSubmitPesquisa() {
+    this.setState({ atual: 0 }, () => {
+      const { atual, limit, pesquisa } = this.state
+      const { usuario } = this.props
+
+      if (!usuario) return null
+
+      const loja = usuario.loja
+      this.props.getPedidosPesquisa(pesquisa, atual, limit, loja)
+    })
   }
 
   onChangePesquisa = env => this.setState({ pesquisa: env.target.value })
 
-  changeNumeroAtual = atual => this.setState({ atual })
+  changeNumeroAtual = atual => {
+    this.setState({ atual }, () => {
+      this.getPedidos()
+    })
+  }
 
   render() {
     const { pesquisa } = this.state
+    const { pedidos } = this.props
 
     // DADOS
-    const dados = [
-      {
-        Cliente: 'Cliente 1',
-        'Valor Total': 89.99,
-        Data: moment().toISOString(),
-        Situação: 'Aguardando Pagamento',
-        botaoDetalhes: '/pedidos/77WA45LML634D69',
-      },
-      {
-        Cliente: 'Cliente 2',
-        'Valor Total': 105.9,
-        Data: moment().toISOString(),
-        Situação: 'Aguardando Pagamento',
-        botaoDetalhes: '/pedidos/54JTF40BJB5BL5',
-      },
-      {
-        Cliente: 'Cliente 3',
-        'Valor Total': 26.72,
-        Data: moment().toISOString(),
-        Situação: 'Pagamento Concluído',
-        botaoDetalhes: '/pedidos/9D19DKSAD9AKSD',
-      },
-    ]
+    const dados = []
+    ;(pedidos ? pedidos.docs : []).forEach(item => {
+      dados.push({
+        Cliente: item.cliente ? item.cliente.nome : '',
+        'Valor Total': formatMoney(item.pagamento.valor),
+        Data: moment(item.createAt).format('DD/MM/YYYY'),
+        Situação:
+          item.pagamento.status === 'Paga'
+            ? item.pagamento.status
+            : item.entrega.status,
+        botaoDetalhes: `/pedido/${item._id}`,
+      })
+    })
 
     return (
       <div className="Pedidos full-width">
@@ -53,7 +84,7 @@ class Pedidos extends Component {
             valor={pesquisa}
             placeholder={'Pesquise aqui pelo nome do cliente...'}
             onChange={env => this.onChangePesquisa()}
-            onClick={() => alert('Pesquisar')}
+            onClick={() => this.handlerSubmitPesquisa()}
           />
           <hr />
           <Tabela
@@ -62,8 +93,8 @@ class Pedidos extends Component {
           />
           <Paginacao
             atual={this.state.atual}
-            total={120}
-            limite={20}
+            total={this.props.pedidos ? this.props.pedidos.total : 0}
+            limite={this.state.limit}
             onClick={numeroAtual => this.changeNumeroAtual(numeroAtual)}
           />
         </div>
@@ -72,4 +103,9 @@ class Pedidos extends Component {
   }
 }
 
-export default Pedidos
+const mapStateToProps = state => ({
+  pedidos: state.pedido.pedidos,
+  usuario: state.auth.usuario,
+})
+
+export default connect(mapStateToProps, actions)(Pedidos)

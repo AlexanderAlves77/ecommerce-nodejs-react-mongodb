@@ -272,6 +272,7 @@ main > div {
 .Link-Voltar {
   text-decoration: none;
   color: rgb(116, 199, 255);
+  cursor: pointer;
 }
 
 .Input-Simples label {
@@ -407,4 +408,10 @@ textarea {
   border: 2px solid var(--cor-terciaria);
   background-color: #f3baba;
   color: #610505;
+}
+
+.alert-success {
+  border: 2px solid var(--cor-secundaria);
+  background-color: #f3baba;
+  color: #175c11;
 }

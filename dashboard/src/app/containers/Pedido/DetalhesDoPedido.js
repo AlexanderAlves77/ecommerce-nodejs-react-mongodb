@@ -9,7 +9,28 @@ import moment from 'moment'
 import { formatMoney } from '../../actions'
 import * as actions from '../../actions/pedidos'
 
+import AlertGeral from '../../components/Alert/Geral'
+
 class DetalhesDoPedido extends Component {
+  state = {
+    aviso: null,
+  }
+
+  cancelarPedido = () => {
+    const { usuario, pedido } = this.props
+    if (!usuario || !pedido) return null
+    if (window.confirm('Você realmente deseja cancelar esse pedido?')) {
+      this.props.cancelarPedido(pedido.pedido._id, usuario.loja, error => {
+        this.setState({
+          aviso: {
+            status: !error,
+            msg: error ? error.message : 'Pedido cancelado com sucesso!',
+          },
+        })
+      })
+    }
+  }
+
   renderCabecalho() {
     if (!this.props.pedido) return null
 
@@ -26,11 +47,15 @@ class DetalhesDoPedido extends Component {
           />
         </div>
         <div className="flex-1 flex flex-end">
-          <ButtonSimples
-            type="danger"
-            label="CANCELAR PEDIDO"
-            onClick={() => alert('Cancelado')}
-          />
+          {pedido.cancelado ? (
+            <ButtonSimples type="danger" label="CANCELADO" />
+          ) : (
+            <ButtonSimples
+              type="danger"
+              label="CANCELAR PEDIDO"
+              onClick={() => this.cancelarPedido()}
+            />
+          )}
         </div>
       </div>
     )
@@ -153,6 +178,7 @@ class DetalhesDoPedido extends Component {
     return (
       <div className="Detalhes-do-Pedido">
         {this.renderCabecalho()}
+        <AlertGeral aviso={this.state.aviso} />
         <div className="flex vertical">
           <div className="flex horizontal">
             {this.renderDadosDoCliente()}

@@ -4,39 +4,83 @@ import Titulo from '../../components/Texto/Titulo'
 import ListaDinamica from '../../components/Listas/ListaDinamicaSimples'
 import InputValor from '../../components/Inputs/InputValor'
 
+import { connect } from 'react-redux'
+import * as actions from '../../actions/pedidos'
+import AlertGeral from '../../components/Alert/Geral'
 class DetalhesDaEntrega extends Component {
   state = {
-    status: [
-      'Preparando para o Envio',
-      'Entrega Transportadora',
-      'Em trânsito',
-    ],
+    aviso: null,
+  }
+
+  cleanState() {
+    this.setState({ aviso: undefined })
   }
 
   onAddListaDinamica = texto => {
-    if (!texto) return false
-    let { status } = this.state
-    status.push(texto)
-    this.setState({ status })
+    if (!texto) {
+      return this.setState({
+        aviso: {
+          status: false,
+          msg: 'Preencha o campo para enviar um novo status',
+        },
+      })
+    }
+
+    this.setNovoStatus(texto, null)
+  }
+
+  setNovoStatus = (status, codigoRastreamento) => {
+    this.cleanState()
+    const { pedido, usuario } = this.props
+    if (!usuario || !pedido) return null
+
+    this.props.setNovoStatusEntrega(
+      { status, codigoRastreamento },
+      pedido.pedido.entrega._id,
+      pedido.pedido._id,
+      usuario.loja,
+      error => {
+        if (error) this.setState({ aviso: false, msg: error.message })
+      }
+    )
   }
 
   handleSubmit = value => {
-    this.state({ codigoDeRastreamento: value })
-    alert('SALVO!')
+    if (!value) {
+      return this.setState({
+        aviso: {
+          status: false,
+          msg: 'Preencha o código de rastreamento corretamente',
+        },
+      })
+    }
+
+    this.setNovoStatus('Atualização no Cód. de Rastreamento', value)
   }
 
   render() {
-    const { status, codigoDeRastreamento } = this.state
+    const { pedido } = this.props
+    const { aviso } = this.state
+    if (!pedido) return <div></div>
+
+    const status = (pedido.registros || []).reduce(
+      (all, item) => (
+        item.tipo === 'entrega' ? all.concat([item.situacao]) : all, []
+      )
+    )
+
+    const { codigoRastreamento } = pedido.pedido.entrega
 
     return (
       <div className="Detalhes-do-Entrega">
         <Titulo tipo="h3" titulo="Entrega" />
+        <AlertGeral aviso={aviso} />
         <br />
         <label>Código de Rastreamento</label>
         <InputValor
-          value={codigoDeRastreamento}
+          value={codigoRastreamento}
           handleSubmit={value => this.handleSubmit(value)}
-          name={'codigoDeRastreamento'}
+          name={'codigoRastreamento'}
         />
         <br />
         <ListaDinamica
@@ -49,4 +93,9 @@ class DetalhesDaEntrega extends Component {
   }
 }
 
-export default DetalhesDaEntrega
+const mapStateToProps = state => ({
+  pedido: state.pedido.pedido,
+  usuario: state.auth.usuario,
+})
+
+export default connect(mapStateToProps, actions)(DetalhesDaEntrega)

@@ -5,50 +5,61 @@ import Pesquisa from '../../components/Inputs/Pesquisa'
 import Tabela from '../../components/Tabela/Simples'
 import Paginacao from '../../components/Paginacao/Simples'
 
+import { connect } from 'react-redux'
+import * as actions from '../../actions/clientes'
+
 class Clientes extends Component {
   state = {
     pesquisa: '',
     atual: 0,
+    limit: 5,
+  }
+
+  getClientes() {
+    const { atual, limit, pesquisa } = this.state
+    const { usuario } = this.props
+
+    if (!usuario) return null
+    const loja = usuario.loja
+
+    if (pesquisa) {
+      this.props.getClientesPesquisa(pesquisa, atual, limit, loja)
+    } else {
+      this.props.getClientes(atual, limit, loja)
+    }
+  }
+
+  componentDidMount() {
+    this.getClientes()
+  }
+
+  componentDidUpdate(nextProps) {
+    if (!this.props.usuario && nextProps.usuario) this.getClientes()
+  }
+
+  handleSubmitPesquisa() {
+    this.setState({ atual: 0 }, () => this.getClientes())
   }
 
   onChangePesquisa = env => this.setState({ pesquisa: env.target.value })
 
-  changeNumeroAtual = atual => this.setState({ atual })
+  changeNumeroAtual = atual =>
+    this.setState({ atual }, () => this.getClientes())
 
   render() {
     const { pesquisa } = this.state
+    const { clientes } = this.props
 
     // DADOS
-    const dados = [
-      {
-        Cliente: 'Cliente 1',
-        'E-mail': 'cliente1@hotmail.com',
-        Telefone: '11 1234-5678',
-        CPF: '111.222.333-44',
-        botaoDetalhes: '/cliente/cliente1@hotmail.com',
-      },
-      {
-        Cliente: 'Cliente 2',
-        'E-mail': 'cliente2@hotmail.com',
-        Telefone: '11 1234-5678',
-        CPF: '111.222.333-44',
-        botaoDetalhes: '/cliente/cliente2@hotmail.com',
-      },
-      {
-        Cliente: 'Cliente 3',
-        'E-mail': 'cliente3@hotmail.com',
-        Telefone: '11 1234-5678',
-        CPF: '111.222.333-44',
-        botaoDetalhes: '/cliente/cliente3@hotmail.com',
-      },
-      {
-        Cliente: 'Cliente 4',
-        'E-mail': 'cliente4@hotmail.com',
-        Telefone: '11 1234-5678',
-        CPF: '111.222.333-44',
-        botaoDetalhes: '/cliente/cliente4@hotmail.com',
-      },
-    ]
+    const dados = [](clientes ? clientes.doc : []).forEach(item => {
+      dados.push({
+        Cliente: item.nome,
+        'E-mail': item.usuario ? item.usuario.email : '',
+        Telefones: item.telefone[0],
+        CPF: item.cpf,
+        botaoDetalhes: `/cliente/${item._id}`,
+      })
+    })
 
     return (
       <div className="Clientes full-width">
@@ -59,7 +70,7 @@ class Clientes extends Component {
             valor={pesquisa}
             placeholder={'Pesquise aqui pelo nome do cliente...'}
             onChange={env => this.onChangePesquisa()}
-            onClick={() => alert('Pesquisar')}
+            onClick={() => this.handleSubmitPesquisa()}
           />
           <hr />
           <Tabela
@@ -68,8 +79,8 @@ class Clientes extends Component {
           />
           <Paginacao
             atual={this.state.atual}
-            total={120}
-            limite={20}
+            total={clientes ? clientes.total : 0}
+            limite={this.state.limit}
             onClick={numeroAtual => this.changeNumeroAtual(numeroAtual)}
           />
         </div>
@@ -78,4 +89,9 @@ class Clientes extends Component {
   }
 }
 
-export default Clientes
+const mapStateToProps = state => ({
+  clientes: state.cliente.clientes,
+  usuario: state.auth.usuario,
+})
+
+export default connect(mapStateToProps, actions)(Clientes)

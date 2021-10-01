@@ -33,8 +33,8 @@ class Clientes extends Component {
     this.getClientes()
   }
 
-  componentDidUpdate(nextProps) {
-    if (!this.props.usuario && nextProps.usuario) this.getClientes()
+  componentDidUpdate(prevProps) {
+    if (!prevProps.usuario && this.props.usuario) this.getClientes()
   }
 
   handleSubmitPesquisa() {

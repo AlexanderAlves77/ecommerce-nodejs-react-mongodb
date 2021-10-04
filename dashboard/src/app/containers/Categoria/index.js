@@ -14,7 +14,7 @@ class Categoria extends Component {
     this.props.getCategoria(id, usuario.loja)
   }
 
-  componentDidUnmount() {
+  componentWillUnmount() {
     this.props.limparCategoria()
   }
 

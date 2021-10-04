@@ -31,19 +31,20 @@ class DetalhesCategoria extends Component {
     }
   }
 
-  componentDidUpdate(nextProps) {
+  componentDidUpdate(prevProps) {
     if (
-      (!this.props.categoria && nextProps.categoria) ||
-      (this.props.categoria &&
-        nextProps.categoria &&
-        this.props.updatedAt !== nextProps.categoria.updatedAt)
+      (!prevProps.categoria && this.props.categoria) ||
+      (prevProps.categoria &&
+        this.props.categoria &&
+        prevProps.updatedAt !== this.props.categoria.updatedAt)
     )
-      this.setState(this.generateStateCategoria(nextProps))
+      this.setState(this.generateStateCategoria(this.props))
   }
 
   salvarCategoria() {
     const { usuario, categoria } = this.props
     if (!usuario || !categoria) return null
+    if (!this.validate()) return null
 
     this.props.updateCategoria(
       this.state,
@@ -66,19 +67,18 @@ class DetalhesCategoria extends Component {
 
     if (!window.confirm('Você realmente deseja remover está categoria?')) return
 
-    this.props.updateCategoria(
-      this.state,
-      categoria._id,
-      usuario.loja,
-      error => {
+    this.props.removerCategoria(categoria._id, usuario.loja, error => {
+      if (error) {
         this.setState({
           aviso: {
-            status: !error,
-            msg: error ? error.message : 'Categoria atualizada com sucesso',
+            status: false,
+            msg: error.message,
           },
         })
+      } else {
+        this.props.history.goBack()
       }
-    )
+    })
   }
 
   renderCabecalho() {
@@ -91,12 +91,12 @@ class DetalhesCategoria extends Component {
         </div>
         <div className="flex-1 flex flex-end">
           <ButtonSimples
-            onClick={() => alert('Salvo!')}
+            onClick={() => this.salvarCategoria()}
             type="success"
             label="Salvar"
           />
           <ButtonSimples
-            onClick={() => alert('Removido!')}
+            onClick={() => this.removerCategoria()}
             type="danger"
             label="Remover"
           />
@@ -105,8 +105,26 @@ class DetalhesCategoria extends Component {
     )
   }
 
+  onChangeInput = (field, value) =>
+    this.setState({ [field]: value }, () => this.validate())
+
+  validate() {
+    const { nome, codigo } = this.state
+    const erros = {}
+
+    if (!nome) erros.nome = 'Preencha aqui com o nome da categoria'
+    if (!codigo) erros.codigo = 'Preencha aqui com o codigo da categoria'
+    if (!codigo && codigo.length < 4)
+      erros.codigo = 'Preencha com mais caracteres'
+    if (!codigo && codigo.indexOf(' ') !== -1)
+      erros.codigo = 'Não coloque espaços no código'
+
+    this.setState({ erros })
+    return !(Object.keys(erros).length > 0)
+  }
+
   renderDados() {
-    const { nome, disponibilidade, codigo } = this.state
+    const { nome, disponibilidade, codigo, erros } = this.state
 
     return (
       <div>
@@ -117,7 +135,8 @@ class DetalhesCategoria extends Component {
               name="codigo"
               noStyle
               value={codigo}
-              handleSubmit={valor => this.setState({ codigo: valor })}
+              erro={erros.codigo}
+              handleSubmit={valor => this.onChangeInput('codigo', valor)}
             />
           }
         />
@@ -128,7 +147,8 @@ class DetalhesCategoria extends Component {
               name="nome"
               noStyle
               value={nome}
-              handleSubmit={valor => this.setState({ nome: valor })}
+              erro={erros.nome}
+              handleSubmit={valor => this.onChangeInput('nome', valor)}
             />
           }
         />

@@ -21,8 +21,8 @@ class Categorias extends Component {
     this.getCategorias()
   }
 
-  componentDidUpdate(nextProps) {
-    if (!this.props.usuario && nextProps.usuario) this.getCategorias()
+  componentDidUpdate(prevProps) {
+    if (!prevProps.usuario && this.props.usuario) this.getCategorias()
   }
 
   renderBotaoNovo() {

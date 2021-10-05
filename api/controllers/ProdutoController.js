@@ -164,7 +164,12 @@ class ProdutoController {
     try {
       const produtos = await Produto.paginate(
         { loja: req.query.loja },
-        { offset, limit, sort: getSort(req.query.sortType) }
+        {
+          offset,
+          limit,
+          sort: getSort(req.query.sortType),
+          populate: ['categoria'],
+        }
       )
       return res.send({ produtos })
     } catch (error) {
@@ -180,7 +185,12 @@ class ProdutoController {
     try {
       const produtos = await Produto.paginate(
         { loja: req.query.loja, disponibilidade: true },
-        { offset, limit, sort: getSort(req.query.sortType) }
+        {
+          offset,
+          limit,
+          sort: getSort(req.query.sortType),
+          populate: ['categoria'],
+        }
       )
       return res.send({ produtos })
     } catch (error) {
@@ -204,7 +214,12 @@ class ProdutoController {
             { sku: { $regex: search } },
           ],
         },
-        { offset, limit, sort: getSort(req.query.sortType) }
+        {
+          offset,
+          limit,
+          sort: getSort(req.query.sortType),
+          populate: ['categoria'],
+        }
       )
       return res.send({ produtos })
     } catch (error) {

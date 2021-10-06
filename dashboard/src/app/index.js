@@ -21,6 +21,7 @@ import NovaCategoria from './containers/Categorias/novaCategoria'
 import Categoria from './containers/Categoria'
 
 import Produtos from './containers/Produtos'
+import NovoProduto from './containers/Produtos/novoProduto'
 import Produto from './containers/Produto'
 
 import Avaliacoes from './containers/Avaliacoes'
@@ -59,6 +60,11 @@ class App extends Component {
             <Route path={'/categoria/:id'} exact component={base(Categoria)} />
 
             <Route path={'/produtos'} exact component={base(Produtos)} />
+            <Route
+              path={'/produtos/novo'}
+              exact
+              component={base(NovoProduto)}
+            />
             <Route path={'/produto/:id'} exact component={base(Produto)} />
 
             <Route

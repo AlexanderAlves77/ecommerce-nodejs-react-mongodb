@@ -63,6 +63,7 @@ class ProdutoController {
       titulo,
       descricao,
       disponibilidade,
+      fotos,
       categoria,
       preco,
       promocao,
@@ -81,6 +82,7 @@ class ProdutoController {
       if (disponibilidade !== undefined) {
         produto.disponibilidade = disponibilidade
       }
+      if (fotos) produto.fotos = fotos
       if (preco) produto.preco = preco
       if (promocao) produto.promocao = promocao
       if (sku) produto.sku = sku
@@ -91,7 +93,7 @@ class ProdutoController {
 
         if (oldCategoria && newCategoria) {
           oldCategoria.produtos = oldCategoria.produtos.filter(
-            item => item !== produto._id
+            item => item.toString() !== produto._id.toString()
           )
           newCategoria.produtos.push(produto._id)
           produto.categoria = categoria

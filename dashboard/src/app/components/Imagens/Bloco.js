@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import Titulo from '../Texto/Titulo'
+import { api } from '../../config'
 
 class BlocoImagem extends Component {
   render() {
@@ -22,7 +23,7 @@ class BlocoImagem extends Component {
           {imagens.map((src, idx) => (
             <div
               className="imagem-container flex flex-center"
-              style={{ backgorundImage: `url("${src})` }}
+              style={{ backgorundImage: `url("${api}/public/images/${src}")` }}
               key={idx}
             >
               <div

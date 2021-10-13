@@ -63,6 +63,7 @@ class VariacaoController {
   async update(req, res, next) {
     const {
       codigo,
+      fotos,
       disponibilidade,
       nome,
       preco,
@@ -88,6 +89,7 @@ class VariacaoController {
       if (promocao) variacao.promocao = promocao
       if (entrega) variacao.entrega = entrega
       if (quantidade) variacao.quantidade = quantidade
+      if (fotos) variacao.fotos = fotos
 
       await variacao.save()
       return res.send({ variacao })

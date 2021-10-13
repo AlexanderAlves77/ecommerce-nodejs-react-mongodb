@@ -62,6 +62,7 @@ const VariacaoValidation = {
         freteGratis: Joi.boolean().optional(),
       }).optional(),
       quantidade: Joi.number().optional(),
+      fotos: Joi.array().items(Joi.string()).optional(),
     },
   },
   updateImages: {

@@ -6,11 +6,8 @@ import * as actions from '../../../actions/variacoes'
 
 class Variacoes extends Component {
   state = {
-    variacaoSelecionada: 'C8J283J38',
-    variacoes: [
-      { nome: 'P', id: 'C8J283J38' },
-      { nome: 'M', id: 'F93KC934K' },
-    ],
+    variacaoSelecionada: '',
+    variacoes: [],
   }
 
   getVariacoes(props) {
@@ -20,28 +17,62 @@ class Variacoes extends Component {
     getVariacoes(produto._id, usuario.loja)
   }
 
+  componentDidMount() {
+    this.getVariacoes(this.props)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      (!prevProps.usuario || !prevProps.produto) &&
+      (this.props.usuario || this.props.produto)
+    )
+      this.getVariacoes(this.props)
+  }
+
+  getVariacao(id) {
+    const { produto, usuario, getVariacao, limparVariacao } = this.props
+    if (produto && usuario && id !== 'novo') {
+      getVariacao(id, produto._id, usuario.loja)
+    } else {
+      limparVariacao()
+    }
+    this.setState({ variacaoSelecionada: id !== 'novo' ? id : '' })
+  }
+
   render() {
-    const { variacoes, variacaoSelecionada } = this.state
+    const { variacaoSelecionada } = this.state
+    const { variacoes } = this.props
 
     return (
       <div className="Variacoes flex vertical flex-center">
         <Titulo tipo="h2" titulo="Variações" />
-        {variacoes.map((item, idx) => (
+        {(variacoes || []).map((item, idx) => (
           <div
-            onClick={() => this.setState({ variacaoSelecionada: item.id })}
+            onClick={() => this.getVariacao(item._id)}
             className={`flex flex-center variacao-item ${
-              variacaoSelecionada === item.id ? 'variacao-item-ativa' : ''
+              variacaoSelecionada === item._id ? 'variacao-item-ativa' : ''
             }`}
           >
             <span>{item.nome}</span>
           </div>
         ))}
+        <div
+          onClick={() => this.getVariacao('novo')}
+          className={`flex flex-center variacao-item ${
+            !variacaoSelecionada ? 'variacao-item-ativa' : ''
+          }`}
+        >
+          <span>+ Novo</span>
+        </div>
       </div>
     )
   }
 }
 
 const mapStateToProps = state => ({
+  variacoes: state.variacoes.variacoes,
+  variacao: state.variacao.variacao,
+  produto: state.produto.produto,
   usuario: state.auth.usuario,
 })
 

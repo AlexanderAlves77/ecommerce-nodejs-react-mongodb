@@ -28,7 +28,8 @@ class Produtos extends Component {
   }
 
   componentDidMount() {
-    this.getProdutos()
+    this.getProdutos(this.props)
+    this.props.limparProduto()
   }
 
   componentDidUpdate(prevProps) {

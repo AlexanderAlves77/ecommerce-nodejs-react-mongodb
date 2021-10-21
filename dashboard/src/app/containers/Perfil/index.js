@@ -5,15 +5,41 @@ import InputSimples from '../../components/Inputs/Simples'
 import { TextoDados } from '../../components/Texto/Dados'
 import Titulo from '../../components/Texto/Titulo'
 
-class Perfil extends Component {
-  state = {
-    nome: 'Usuário Teste',
-    email: 'usuario@teste.com',
-    telefone: '11 1234-4321',
+import { connect } from 'react-redux'
+import * as actions from '../../actions'
+import AlertGeral from '../../components/Alert/Geral'
 
-    senhaAntiga: '',
-    novaSenha: '',
-    confirmarNovaSenha: '',
+class Perfil extends Component {
+  constructor(props) {
+    super()
+    this.state = {
+      nome: props.usuario ? props.usuario.nome : '',
+      email: props.usuario ? props.usuario.email : '',
+
+      senhaAntiga: '',
+      novaSenha: '',
+      confirmarNovaSenha: '',
+
+      aviso: null,
+      erros: {},
+    }
+  }
+
+  componentDidMount() {
+    this.props.getUser()
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      prevProps.usuario &&
+      this.props.usuario &&
+      prevProps.usuario.updatedAt !== this.props.usuario.updatedAt
+    ) {
+      this.setState({
+        nome: this.props.usuario ? this.props.usuario.nome : '',
+        email: this.props.usuario ? this.props.usuario.email : '',
+      })
+    }
   }
 
   renderCabecalho() {
@@ -25,7 +51,7 @@ class Perfil extends Component {
         <div className="flex-1 flex flex-end">
           <ButtonSimples
             type="success"
-            onClick={() => alert('salvo')}
+            onClick={() => this.updateUsuario()}
             label={'Salvar'}
           />
         </div>
@@ -33,8 +59,61 @@ class Perfil extends Component {
     )
   }
 
+  onChangeInput = (field, value) =>
+    this.setState({ [field]: value }, () => this.validate())
+
+  validate() {
+    const { nome, email, senhaAntiga, novaSenha, confirmarNovaSenha } =
+      this.state
+    const erros = {}
+
+    if (!nome) erros.nome = 'Preencha com o nome'
+    if (!email) erros.email = 'Preencha com o email'
+
+    if (senhaAntiga || novaSenha || confirmarNovaSenha) {
+      if (!senhaAntiga) erros.senhaAntiga = 'Preencha aqui com a senha antiga'
+      if (!novaSenha) erros.novaSenha = 'Preencha aqui com a nova antiga'
+      if (!confirmarNovaSenha)
+        erros.confirmarNovaSenha = 'Repita aqui a nova antiga'
+      if (novaSenha !== confirmarNovaSenha)
+        erros.confirmarNovaSenha = 'Digite novamente, as senhas não coincide'
+    }
+
+    this.setState({ erros })
+    return !(Object.keys(erros).length > 0)
+  }
+
+  updateUsuario() {
+    if (!this.validate()) return null
+    const { nome, email, novaSenha, senhaAntiga } = this.state
+
+    const dados = {}
+    dados.nome = nome
+    dados.email = email
+    if (novaSenha) {
+      dados.password = novaSenha
+      dados.oldPassword = senhaAntiga
+    }
+
+    this.props.updateUser(dados, error => {
+      if (!error) {
+        this.setState({
+          senhaAntiga: '',
+          novaSenha: '',
+          confirmarNovaSenha: '',
+        })
+      }
+      this.setState({
+        aviso: {
+          status: !error,
+          msg: error ? error.message : 'Dados atualizados com sucesso',
+        },
+      })
+    })
+  }
+
   renderDadosConfiguracao() {
-    const { nome, email, telefone } = this.state
+    const { nome, email, erros } = this.state
 
     return (
       <div className="Dados-configuacao">
@@ -45,7 +124,8 @@ class Perfil extends Component {
               value={nome}
               name="nome"
               noStyle
-              handleSubmit={valor => this.setState({ nome: valor })}
+              erros={erros.nome}
+              handleSubmit={valor => this.onChangeInput('nome', valor)}
             />
           }
         />
@@ -56,18 +136,8 @@ class Perfil extends Component {
               value={email}
               name="email"
               noStyle
-              handleSubmit={valor => this.setState({ email: valor })}
-            />
-          }
-        />
-        <TextoDados
-          chave="Telefone"
-          valor={
-            <InputValor
-              value={telefone}
-              name="telefone"
-              noStyle
-              handleSubmit={valor => this.setState({ telefone: valor })}
+              erros={erros.email}
+              handleSubmit={valor => this.onChangeInput('email', valor)}
             />
           }
         />
@@ -76,7 +146,7 @@ class Perfil extends Component {
   }
 
   renderDadosSenha() {
-    const { senhaAntiga, novaSenha, confirmarNovaSenha } = this.state
+    const { senhaAntiga, novaSenha, confirmarNovaSenha, erros } = this.state
 
     return (
       <div className="Dados-configuacao">
@@ -85,22 +155,25 @@ class Perfil extends Component {
           name="senha-antiga"
           label="Senha Antiga:"
           value={senhaAntiga}
-          onChange={evt => this.setState({ senhaAntiga: evt.target.value })}
+          erros={erros.senhaAntiga}
+          onChange={evt => this.onChangeInput('senhaAntiga', evt.target.value)}
         />
         <InputSimples
           type="password"
           name="nova-senha"
           label="Nova Senha"
           value={novaSenha}
-          onChange={evt => this.setState({ novaSenha: evt.target.value })}
+          erros={erros.novaSenha}
+          onChange={evt => this.onChangeInput('novaSenha', evt.target.value)}
         />
         <InputSimples
           type="password"
           name="confirmar-nova-senha"
           label="Confirmar Nova Senha"
           value={confirmarNovaSenha}
+          erros={erros.confirmarNovaSenha}
           onChange={evt =>
-            this.setState({ confirmarNovaSenha: evt.target.value })
+            this.onChangeInput('confirmarNovaSenha', evt.target.value)
           }
         />
       </div>
@@ -112,6 +185,7 @@ class Perfil extends Component {
       <div className="Configuracoes full-width">
         <div className="Card">
           {this.renderCabecalho()}
+          <AlertGeral aviso={this.state.aviso} />
           <div className="flex horizontal">
             <div className="flex-1">{this.renderDadosConfiguracao()}</div>
             <div className="flex-1">{this.renderDadosSenha()}</div>
@@ -122,4 +196,8 @@ class Perfil extends Component {
   }
 }
 
-export default Perfil
+const mapStateToProps = state => ({
+  usuario: state.auth.usuario,
+})
+
+export default connect(mapStateToProps, actions)(Perfil)

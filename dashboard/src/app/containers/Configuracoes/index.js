@@ -10,17 +10,17 @@ import { connect } from 'react-redux'
 import * as actions from '../../actions/configuracoes'
 
 class Configuracoes extends Component {
-  generateStateConfiguracao = (props) => ({
-    nome: props.loja ? props.loja.name : "",
-    CNPJ: props.loja ? props.loja.cnpj : "",
-    email: props.loja ? props.loja.email : "",
+  generateStateConfiguracao = props => ({
+    nome: props.loja ? props.loja.name : '',
+    CNPJ: props.loja ? props.loja.cnpj : '',
+    email: props.loja ? props.loja.email : '',
 
-    endereco: props.loja ? props.loja.endereco.local : "",
-    numero: props.loja ? props.loja.endereco.numero : "",
-    bairro: props.loja ? props.loja.endereco.bairro : "",
-    cidade: props.loja ? props.loja.endereco.cidade : "",
-    estado: props.loja ? props.loja.endereco.estado : "",
-    cep: props.loja ? props.loja.endereco.CEP : "",
+    endereco: props.loja ? props.loja.endereco.local : '',
+    numero: props.loja ? props.loja.endereco.numero : '',
+    bairro: props.loja ? props.loja.endereco.bairro : '',
+    cidade: props.loja ? props.loja.endereco.cidade : '',
+    estado: props.loja ? props.loja.endereco.estado : '',
+    cep: props.loja ? props.loja.endereco.CEP : '',
 
     telefones: props.loja ? props.loja.telefones : [],
   })
@@ -28,11 +28,11 @@ class Configuracoes extends Component {
   state = {
     ...this.generateStateConfiguracao(this.props),
     aviso: null,
-    erros: {}
+    erros: {},
   }
 
   getConfiguracao(props) {
-    const {usuario} = props 
+    const { usuario } = props
     if (!usuario) return null
     this.props.getConfiguracao(usuario.loja)
   }
@@ -41,42 +41,46 @@ class Configuracoes extends Component {
     this.getConfiguracao(this.props)
   }
 
-  componentDidUpdate(prevprops) {
-    if (!prevProps.usuario && this.props.usuario) this.getConfiguracao(this.props)
+  componentDidUpdate(prevProps) {
+    if (!prevProps.usuario && this.props.usuario)
+      this.getConfiguracao(this.props)
 
     if (!prevProps.loja && this.props.loja) {
       this.setState(this.generateStateConfiguracao(this.props))
     }
   }
-  
+
   updateLoja() {
-    const {usuario} = this.props 
-    if (!usuario || !this.validate()) return null 
+    const { usuario } = this.props
+    if (!usuario || !this.validate()) return null
     this.props.updateConfiguracao(this.state, usuario.loja, error => {
       this.setState({
         aviso: {
           status: !error,
-          msg: error ? error,message : "Configuração da loja atualizada com sucesso"
-        }
+          msg: error
+            ? error.message
+            : 'Configuração da loja atualizada com sucesso',
+        },
       })
     })
   }
 
   validate() {
-    const {nome, CNPJ, email, endereco, numero, bairro, cidade, estado, cep} = this.state 
+    const { nome, CNPJ, email, endereco, numero, bairro, cidade, estado, cep } =
+      this.state
     const erros = {}
 
-    if (!nome) erros.nome = "Preencha aqui com o nome da loja"
-    if (!CNPJ) erros.CNPJ = "Preencha aqui com o CNPJ da loja"
-    if (!email) erros.email = "Preencha aqui com o email da loja"
-    if (!endereco) erros.endereco = "Preencha aqui com o endereco da loja"
-    if (!numero) erros.numero = "Preencha aqui com o numero da loja"
-    if (!bairro) erros.bairro = "Preencha aqui com o bairro da loja"
-    if (!cidade) erros.cidade = "Preencha aqui com a cidade da loja"
-    if (!estado) erros.estado = "Preencha aqui com o estado da loja"
-    if (!cep) erros.cep = "Preencha aqui com o cep da loja"
-    
-    this.setState({erros})
+    if (!nome) erros.nome = 'Preencha aqui com o nome da loja'
+    if (!CNPJ) erros.CNPJ = 'Preencha aqui com o CNPJ da loja'
+    if (!email) erros.email = 'Preencha aqui com o email da loja'
+    if (!endereco) erros.endereco = 'Preencha aqui com o endereco da loja'
+    if (!numero) erros.numero = 'Preencha aqui com o numero da loja'
+    if (!bairro) erros.bairro = 'Preencha aqui com o bairro da loja'
+    if (!cidade) erros.cidade = 'Preencha aqui com a cidade da loja'
+    if (!estado) erros.estado = 'Preencha aqui com o estado da loja'
+    if (!cep) erros.cep = 'Preencha aqui com o cep da loja'
+
+    this.setState({ erros })
     return !(Object.keys(erros).length > 0)
   }
 
@@ -98,7 +102,9 @@ class Configuracoes extends Component {
   }
 
   handleSubmit = (field, value) => {
-    this.setState({ [field]: value}, () => {this.validate() })
+    this.setState({ [field]: value }, () => {
+      this.validate()
+    })
   }
 
   renderDadosConfiguracao() {
@@ -114,7 +120,7 @@ class Configuracoes extends Component {
               name="nome"
               noStyle
               error={erros.nome}
-              handleSubmit={valor => this.handleSubmit( "nome", valor )}
+              handleSubmit={valor => this.handleSubmit('nome', valor)}
             />
           }
         />
@@ -126,7 +132,7 @@ class Configuracoes extends Component {
               name="CNPJ"
               noStyle
               error={erros.CNPJ}
-              handleSubmit={valor => this.handleSubmit( "CNPJ", valor )}
+              handleSubmit={valor => this.handleSubmit('CNPJ', valor)}
             />
           }
         />
@@ -138,7 +144,7 @@ class Configuracoes extends Component {
               name="email"
               noStyle
               error={erros.email}
-              handleSubmit={valor => this.handleSubmit( "email", valor )}
+              handleSubmit={valor => this.handleSubmit('email', valor)}
             />
           }
         />
@@ -147,7 +153,7 @@ class Configuracoes extends Component {
   }
 
   renderDadosEndereco() {
-    const { endereco, bairro, cidade, estado, cep } = this.state
+    const { endereco, bairro, cidade, estado, cep, erros } = this.state
 
     return (
       <div className="Dados-configuacao">
@@ -159,7 +165,7 @@ class Configuracoes extends Component {
               name="endereco"
               noStyle
               error={erros.endereco}
-              handleSubmit={valor => this.handleSubmit( "endereco", valor )}
+              handleSubmit={valor => this.handleSubmit('endereco', valor)}
             />
           }
         />
@@ -171,7 +177,7 @@ class Configuracoes extends Component {
               name="bairro"
               noStyle
               error={erros.bairro}
-              handleSubmit={valor => this.handleSubmit( "bairro", valor )}
+              handleSubmit={valor => this.handleSubmit('bairro', valor)}
             />
           }
         />
@@ -183,7 +189,7 @@ class Configuracoes extends Component {
               name="cidade"
               noStyle
               error={erros.cidade}
-              handleSubmit={valor => this.handleSubmit( "cidade", valor )}
+              handleSubmit={valor => this.handleSubmit('cidade', valor)}
             />
           }
         />
@@ -195,7 +201,7 @@ class Configuracoes extends Component {
               name="estado"
               noStyle
               error={erros.estado}
-              handleSubmit={valor => this.handleSubmit( "estado", valor )}
+              handleSubmit={valor => this.handleSubmit('estado', valor)}
             />
           }
         />
@@ -207,7 +213,7 @@ class Configuracoes extends Component {
               name="cep"
               noStyle
               error={erros.cep}
-              handleSubmit={valor => this.handleSubmit( "cep", valor )}
+              handleSubmit={valor => this.handleSubmit('cep', valor)}
             />
           }
         />
@@ -268,7 +274,7 @@ class Configuracoes extends Component {
 
 const mapStateToProps = state => ({
   loja: state.configuracao.loja,
-  usuario: state.auth.usuario
+  usuario: state.auth.usuario,
 })
 
 export default connect(mapStateToProps, actions)(Configuracoes)

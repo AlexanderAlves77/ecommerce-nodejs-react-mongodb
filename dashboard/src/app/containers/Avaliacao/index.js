@@ -4,6 +4,32 @@ import Voltar from '../../components/Links/Voltar'
 import Titulo from '../../components/Texto/Titulo'
 
 class Avaliacao extends Component {
+  state = { aviso: null }
+
+  getAvaliacao(props) {
+    const { usuario, produto } = props
+    if (!usuario || !produto) return
+    const { id: avaliacao } = props.match.params
+    this.props.getAvaliacao(avaliacao, produto._id, usuario.loja)
+  }
+
+  componentDidMount() {
+    this.props.getAvaliacao(this.props)
+  }
+
+  componentDidUpdate(prevProps) {
+    if (
+      (!prevProps.usuario || !prevProps.produto) &&
+      this.props.usuario &&
+      this.props.produto
+    )
+      this.props.getAvaliacao(this.props)
+  }
+
+  componentWillUnmount() {
+    this.props.limparAvaliacao()
+  }
+
   renderCabecalho() {
     return (
       <div className="flex">

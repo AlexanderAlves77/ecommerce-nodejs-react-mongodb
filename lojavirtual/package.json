@@ -1,12 +1,27 @@
 {
   "name": "lojavirtual",
   "version": "1.0.0",
-  "description": "",
+  "description": "Loja Virtual",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "dev": "next",
+    "start": "next start",
+    "build": "next build"
   },
   "keywords": [],
-  "author": "",
-  "license": "ISC"
+  "author": "Alexander Alves",
+  "license": "ISC",
+  "dependencies": {
+    "async": "^3.2.1",
+    "axios": "^0.23.0",
+    "js-cookie": "^3.0.1",
+    "moment": "^2.29.1",
+    "next": "^11.1.2",
+    "next-redux-wrapper": "^7.0.5",
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2",
+    "react-redux": "^7.2.5",
+    "redux": "^4.1.1",
+    "redux-thunk": "^2.3.0"
+  }
 }

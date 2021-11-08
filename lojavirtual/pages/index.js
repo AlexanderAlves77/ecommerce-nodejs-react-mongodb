@@ -11,7 +11,7 @@ export default class Index extends Component {
   render() {
     return (
       <Layout title="LOJA IT - Melhores produtos de informática">
-        <Cabecalho />
+        <Cabecalho simples />
         <Banners />
         <Beneficios />
         <ProdutosPaginaInicial />

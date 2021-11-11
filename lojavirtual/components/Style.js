@@ -33,10 +33,11 @@ export default () => (
       }
 
       .Header {
-        max-height: 100px;
+        max-height: 150px;
       }
 
-      .header-wrapper {
+      .header-wrapper,
+      .categorias {
         max-width: 1200px;
         margin: 0 auto;
         width: 100%;
@@ -47,13 +48,17 @@ export default () => (
         .header-wrapper {
           flex-direction: column;
         }
+        .categorias {
+          overflow-x: scroll;
+        }
         .Header {
-          max-height: 200px;
+          max-height: 250px;
         }
       }
 
       .logo {
         max-width: 230px;
+        cursor: pointer;
       }
 
       .input-pesquisa {
@@ -108,6 +113,27 @@ export default () => (
         margin-top: -15px;
         position: relative;
         top: -15px;
+      }
+
+      .categorias-wrapper {
+        background-color: #ffedd9;
+      }
+
+      .categoria-item {
+        padding: 10px 5px;
+        border-right: 1px solid #e87c08;
+        cursor: pointer;
+        font-weight: bold;
+        color: #333;
+        text-transform: uppercase;
+      }
+
+      .categoria-item:hover {
+        border-right: 1px solid #e87c08;
+      }
+
+      .categoria-item:last-child {
+        border-right: 0;
       }
     `}
   </style>

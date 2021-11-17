@@ -25,6 +25,35 @@ export default () => (
         max-width: 1440px;
       }
 
+      .wrap {
+        flex-wrap: wrap;
+      }
+
+      .wrap-1 {
+        flex-basis: calc(100% - 20px);
+        max-width: calc(100% - 20px);
+      }
+
+      .wrap-2 {
+        flex-basis: calc(50% - 20px);
+        max-width: calc(50% - 20px);
+      }
+
+      .wrap-3 {
+        flex-basis: calc(32% - 20px);
+        max-width: calc(32% - 20px);
+      }
+
+      .wrap-4 {
+        flex-basis: calc(25% - 20px);
+        max-width: calc(25% - 20px);
+      }
+
+      .wrap-5 {
+        flex-basis: calc(20% - 20px);
+        max-width: calc(20% - 20px);
+      }
+
       .flex {
         display: flex;
       }
@@ -63,7 +92,11 @@ export default () => (
         }
         .wrap-2-mb {
           flex-basis: calc(50% - 20px);
-          max-width: 50%;
+          max-width: calc(50% - 20px);
+        }
+        .produto.wrap-2-mb {
+          flex-basis: calc(50% - 50px);
+          max-width: calc(50% - 50px);
         }
         .horizontal-mb {
           flex-direction: row;

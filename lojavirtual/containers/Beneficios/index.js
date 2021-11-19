@@ -4,7 +4,7 @@ import ItemBeneficio from '../../components/Item/Beneficio'
 
 const Beneficios = () => (
   <div className="Beneficios">
-    <div className="container flex horizontal hotrizontal-mb wrap-mb">
+    <div className="container flex horizontal-mb wrap-mb">
       <ItemBeneficio
         icone="fa-globe"
         texto="Em 12 vezes sem juros para o todo o site"

@@ -101,6 +101,9 @@ export default () => (
         .horizontal-mb {
           flex-direction: row;
         }
+        .horizontal {
+          flex-direction: column;
+        }
       }
     `}
   </style>

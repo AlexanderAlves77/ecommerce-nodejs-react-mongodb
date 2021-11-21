@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 
 import Produtos from '../../../components/Listas/Produtos'
+import Paginacao from '../../../components/Paginacao'
 
 const PRODUTOS = [
   {
@@ -27,10 +28,23 @@ const PRODUTOS = [
 ]
 
 class ProdutosCategoria extends Component {
+  state = { atual: 0 }
+
   render() {
     return (
-      <div className="container Produtos-Inicial flex vertical">
+      <div className="container Categoria-Produtos">
+        <br />
+        <br />
+        <div className="flex flex-center">
+          <h1>ACESSÓRIOS</h1>
+        </div>
         <Produtos produtos={PRODUTOS} itensPorLinha={4} />
+        <Paginacao
+          atual={this.state.atual || 0}
+          total={PRODUTOS.length * 4}
+          limite={PRODUTOS.length}
+          onClick={numeroAtual => this.setState({ atual: numeroAtual })}
+        />
       </div>
     )
   }

@@ -7,7 +7,7 @@ class CarrinhoContainer extends Component {
     render() {
         return (
             <div className='container Carrinho'>
-                <h2>Detalhes dos Pedidos</h2>
+                <h2>Detalhes dos Pedido</h2>
                 <br />
                 <ListaDeProdutos />
                 <DadosDoCarrinho />

@@ -397,7 +397,8 @@
   border: 1px solid #aaaa;
 }
 
-.Carrinho .btn-remover {
+.Carrinho .btn-remover,
+.Carrinho .limpar-frete {
   color: #e87c08;
   font-size: 0.85rem;
   text-decoration: underline;
@@ -418,6 +419,25 @@
   background-color: #272727;
   font: #FFF;
 }
+
+.dados-do-carrinho-container {
+  margin-top: 20px;
+}
+
+.dados-do-carrinho-item {
+  padding: 10px 0;
+  border-top: 1px solid #aaaa;
+}
+
+.Carrinho select {
+  font-size: 1rem;
+  padding: 5px 10px;
+}
+
+.Carrinho .valor-frete {
+  margin: 0;
+}
+
 
 
 /* RODAPE */
